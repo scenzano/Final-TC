@@ -1,0 +1,15 @@
+notas final TC
+
+NICE TO HAVE:
+
+agregar Struct a tipos
+
+agregar printf
+
+
+TO DO:
+
+Embellecedor: Listo a grandes rasgos.
+
+    Controlar balance de llaves y parentesis.
+

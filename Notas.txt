@@ -6,10 +6,15 @@ agregar Struct a tipos
 
 agregar printf
 
+if y else sin llaves cuando es una sola instruccion
 
 TO DO:
 
 Embellecedor: Listo a grandes rasgos.
 
-    Controlar balance de llaves y parentesis.
+    Controlar balance de llaves y parentesis ( Por ahora se hace por gramatica)
+    
+
+    
+    
 

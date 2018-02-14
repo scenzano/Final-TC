@@ -1,4 +1,4 @@
-// Generated from C:\Users\sebastian\Desktop\FINAL-TC\FinalCenzano\CompCenzano\src\ar\edu\u005Cubp\tc\CGrammar.g4 by ANTLR 4.2.2
+// Generated from C:\Users\sebastian\Desktop\FINAL-TC\FinalCenzano\Final-TC\CompCenzano\src\ar\edu\u005Cubp\tc\CGrammar.g4 by ANTLR 4.2.2
 package ar.edu.ubp.tc;
 import ar.edu.ubp.tc.embellecedor.Embellecedor;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -31,7 +31,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitAsignacion(@NotNull CGrammarParser.AsignacionContext ctx) {
-		embellecedor.append(ctx.getText(), true, 2);
+		embellecedor.append(ctx.getText(), true, 1);
 		return visitChildren(ctx);
         }
 
@@ -57,9 +57,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFor_asignacion(@NotNull CGrammarParser.For_asignacionContext ctx) {
-            return visitChildren(ctx);
-        }
+	@Override public T visitFor_asignacion(@NotNull CGrammarParser.For_asignacionContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -93,7 +91,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitEstructura_control_while(@NotNull CGrammarParser.Estructura_control_whileContext ctx) {
             
-            embellecedor.append(ctx.getChild(0).getText(), true, 2);
+            embellecedor.append(ctx.getChild(0).getText(), true, 1);
             embellecedor.append(ctx.getChild(1).getText(), false, 0);
             embellecedor.append(ctx.getChild(2).getText(), false, 0);
             embellecedor.append(ctx.getChild(3).getText(), false, 0);
@@ -245,7 +243,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitEstructura_control_if(@NotNull CGrammarParser.Estructura_control_ifContext ctx) {
 
-            embellecedor.append(ctx.getChild(0).getText(), true, 0);
+            embellecedor.append(ctx.getChild(0).getText(), true, 1);
             embellecedor.append(ctx.getChild(1).getText(), false, 0);
             embellecedor.append(ctx.getChild(2).getText(), false, 0);
             embellecedor.append(ctx.getChild(3).getText(), false, 0);
@@ -304,14 +302,6 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitComentario(@NotNull CGrammarParser.ComentarioContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitLista_terminos_logicos(@NotNull CGrammarParser.Lista_terminos_logicosContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -320,19 +310,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitComentario_simple(@NotNull CGrammarParser.Comentario_simpleContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitRetorno(@NotNull CGrammarParser.RetornoContext ctx) {
-		
-		embellecedor.append(ctx.getText(), true, 2);
-		return visitChildren(ctx);
-	}
+	@Override public T visitRetorno(@NotNull CGrammarParser.RetornoContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

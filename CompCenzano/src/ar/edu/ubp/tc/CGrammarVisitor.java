@@ -1,4 +1,4 @@
-// Generated from C:\Users\sebastian\Desktop\FINAL-TC\FinalCenzano\CompCenzano\src\ar\edu\u005Cubp\tc\CGrammar.g4 by ANTLR 4.2.2
+// Generated from C:\Users\sebastian\Desktop\FINAL-TC\FinalCenzano\Final-TC\CompCenzano\src\ar\edu\u005Cubp\tc\CGrammar.g4 by ANTLR 4.2.2
 package ar.edu.ubp.tc;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -187,25 +187,11 @@ public interface CGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitTermino_logico(@NotNull CGrammarParser.Termino_logicoContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link CGrammarParser#comentario}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitComentario(@NotNull CGrammarParser.ComentarioContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link CGrammarParser#lista_terminos_logicos}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLista_terminos_logicos(@NotNull CGrammarParser.Lista_terminos_logicosContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link CGrammarParser#comentario_simple}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitComentario_simple(@NotNull CGrammarParser.Comentario_simpleContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link CGrammarParser#retorno}.

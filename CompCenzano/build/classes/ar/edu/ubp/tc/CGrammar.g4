@@ -6,9 +6,76 @@
 
 grammar CGrammar;
 
+/* LEXER RULES */
+
+CARACTER_LLAVE_ABRE:'{';
+CARACTER_LLAVE_CIERRA:'}';
+
+CARACTER_PARENTESIS_ABRE:'(';
+CARACTER_PARENTESIS_CIERRA:')';
+
+TIPO_DATO_INT: 'int ';
+TIPO_DATO_DOUBLE: 'double ';
+TIPO_DATO_FLOAT: 'float ';
+TIPO_DATO_CHAR: 'char ';
+TIPO_DATO_STRING : 'string ';
+TIPO_DATO_VOID : 'void ';
+
+
+ESTRUCTURA_IF:'if';
+ESTRUCTURA_ELSE:'else';
+ESTRUCTURA_FOR: 'for';
+ESTRUCTURA_WHILE:'while';
+
+INSTRUCCION_RETURN : 'return ';
+
+fragment LETRA: [a-zA-Z];
+fragment DIGITO:[0-9];
+
+ID: (LETRA|'_')(LETRA | DIGITO | '_')*;
+
+VALORNULL :'null';
+
+NUMERO : DIGITO+('.'DIGITO+)?;
+
+STRING : '\"'(~'\"')*'\"';
+
+
+//CARACTER_NEGACION:'!';
+
+COMPARADOR_IGUAL : '==';
+COMPARADOR_DISTINTO : '!=';
+COMPARADOR_MAYOR : '>';
+COMPARADOR_MENOR : '<';
+COMPARADOR_MAYOR_IGUAL : '>=';
+COMPARADOR_MENOR_IGUAL : '<=';
+
+OPERADOR_ASIGNACION : '=';
+OPERADOR_SUMA : '+';
+OPERADOR_RESTA : '-';
+OPERADOR_PRODUCTO : '*';
+OPERADOR_DIVISION : '/';
+
+OPERADOR_SUMA_COMPUESTA : '+=';
+OPERADOR_RESTA_COMPUESTA : '-=';
+OPERADOR_PRODUCTO_COMPUESTO : '*=';
+OPERADOR_DIVISION_COMPUESTA : '/=';
+
+OPERADOR_INCREMENTO : '++';
+OPERADOR_DECREMENTO : '--';
+
+OPERADOR_AND : '&&';
+OPERADOR_OR : '||';
+
+
+SIGNO_COMA : ',';
+SIGNO_PUNTO : '.';
+SIGNO_PUNTO_Y_COMA : ';';
+
+/* For whitespace skiping */
+WS:[ \n\r\t]->skip;
+
 /* PARSER RULES */
-
-
 
 programa: instrucciones;
 
@@ -16,20 +83,11 @@ instrucciones: declaracion_variable instrucciones
              | declaracion_funcion instrucciones
              | asignacion instrucciones
              | llamada_funcion instrucciones
-             | estructura_control instrucciones
-             | comentario instrucciones
+             | estructura_control 
              | retorno instrucciones
              |
              ;
 
-
-declaracion_variable: tipo_dato ID declaraciones_asignacion SIGNO_PUNTO_Y_COMA
-             ;
-
-declaraciones_asignacion : OPERADOR_ASIGNACION termino_matematico
-                         | SIGNO_COMA ID declaraciones_asignacion
-                         |
-                         ;
 
 termino_matematico: valor lista_expresiones_matematicas
                   | CARACTER_PARENTESIS_ABRE termino_matematico CARACTER_PARENTESIS_CIERRA lista_expresiones_matematicas //Cubre balance parentesis en expresiones matematicas.
@@ -42,6 +100,16 @@ lista_expresiones_matematicas : OPERADOR_SUMA termino_matematico
                               | OPERADOR_DIVISION termino_matematico
                               |
                               ;
+
+
+declaracion_variable: tipo_dato ID declaraciones_asignacion SIGNO_PUNTO_Y_COMA
+             ;
+
+
+declaraciones_asignacion : OPERADOR_ASIGNACION termino_matematico declaraciones_asignacion
+                         | SIGNO_COMA ID declaraciones_asignacion
+                         |
+                         ;
 
 //ExpresionParentesis: CARACTER_PARENTESIS_ABRE (ExpresionParentesis | Expression) CARACTER_PARENTESIS_CIERRA ;
 
@@ -79,6 +147,24 @@ lista_parametros_en_llamada : SIGNO_COMA valor lista_parametros_en_llamada
 
 bloque_instrucciones : CARACTER_LLAVE_ABRE instrucciones CARACTER_LLAVE_CIERRA
                      ;
+
+
+valor: NUMERO
+     | ID
+     | STRING
+     | VALORNULL
+     | VALOR_NULO
+     | valor_funcion
+     ;
+
+tipo_dato : TIPO_DATO_INT 
+          | TIPO_DATO_FLOAT 
+          | TIPO_DATO_DOUBLE 
+          | TIPO_DATO_STRING
+          | TIPO_DATO_VOID
+          | TIPO_DATO_CHAR
+          | TIPO_DATO_STRING
+          ;
 
 retorno : INSTRUCCION_RETURN SIGNO_PUNTO_Y_COMA
         | INSTRUCCION_RETURN valor SIGNO_PUNTO_Y_COMA
@@ -150,97 +236,3 @@ estructura_control_for : ESTRUCTURA_FOR CARACTER_PARENTESIS_ABRE  for_asignacion
 
 estructura_control_while : ESTRUCTURA_WHILE CARACTER_PARENTESIS_ABRE expresion_logica CARACTER_PARENTESIS_CIERRA bloque_instrucciones
                          ;
-
-comentario : comentario_simple
-           ;
-
-comentario_simple: COMENTARIO_SIMPLE;
-
-//comentario_multiple: (~'\n')*'\"';
-
-
-
-valor: NUMERO
-     | ID
-     | STRING
-     | VALORNULL
-     | VALOR_NULO
-     | valor_funcion
-     ;
-
-tipo_dato : TIPO_DATO_INT 
-          | TIPO_DATO_FLOAT 
-          | TIPO_DATO_DOUBLE 
-          | TIPO_DATO_STRING
-          | TIPO_DATO_VOID
-          | TIPO_DATO_CHAR
-          | TIPO_DATO_STRING
-          ;
-
-/* LEXER RULES */
-
-/* For whitespace skiping */
-WS:[ \n\r\t]->skip;
-
-/* WARNING ID keywords as class or function should be first
-in order as the matching is with the first that finds */
-
-
-ESTRUCTURA_IF:'if';
-ESTRUCTURA_ELSE:'else';
-ESTRUCTURA_FOR: 'for';
-ESTRUCTURA_WHILE:'while';
-
-TIPO_DATO_INT: 'int ';
-TIPO_DATO_DOUBLE: 'double ';
-TIPO_DATO_FLOAT: 'float ';
-TIPO_DATO_CHAR: 'char ';
-TIPO_DATO_STRING : 'string ';
-TIPO_DATO_VOID : 'void ';
-INSTRUCCION_RETURN : 'return ';
-
-CARACTER_PARENTESIS_ABRE:'(';
-CARACTER_PARENTESIS_CIERRA:')';
-CARACTER_LLAVE_ABRE:'{';
-CARACTER_LLAVE_CIERRA:'}';
-//CARACTER_NEGACION:'!';
-
-fragment LETRA: [a-z|A-Z];
-fragment DIGITO:[0-9];
-
-ID: (LETRA|'_')(LETRA | DIGITO | '_')*;
-
-NUMERO : DIGITO+('.'DIGITO+)?;
-
-STRING : '\"'(~'\"')*'\"';
-
-VALORNULL :'null';
-
-COMPARADOR_IGUAL : '==';
-COMPARADOR_DISTINTO : '!=';
-COMPARADOR_MAYOR : '>';
-COMPARADOR_MENOR : '<';
-COMPARADOR_MAYOR_IGUAL : '>=';
-COMPARADOR_MENOR_IGUAL : '<=';
-
-OPERADOR_ASIGNACION : '=';
-OPERADOR_SUMA : '+';
-OPERADOR_RESTA : '-';
-OPERADOR_PRODUCTO : '*';
-OPERADOR_DIVISION : '/';
-
-OPERADOR_SUMA_COMPUESTA : '+=';
-OPERADOR_RESTA_COMPUESTA : '-=';
-OPERADOR_PRODUCTO_COMPUESTO : '*=';
-OPERADOR_DIVISION_COMPUESTA : '/=';
-
-OPERADOR_INCREMENTO : '++';
-OPERADOR_DECREMENTO : '--';
-
-OPERADOR_AND : '&&';
-OPERADOR_OR : '||';
-
-SIGNO_COMA : ',';
-SIGNO_PUNTO : '.';
-SIGNO_PUNTO_Y_COMA : ';';
-COMENTARIO_SIMPLE: ('//')((~'\n') | LETRA | DIGITO | '_')*;

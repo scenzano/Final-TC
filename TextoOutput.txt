@@ -1,19 +1,12 @@
-int main()
+
+while(salir)
 {
-	int n;
-	int i;
-	double a,b,h;
-
-	n=2;
-
-	for(i=0;i<10;i++)
+	if((x>0)||(z>0))
 	{
+		y=z*x;
 	}
-
-	while(n>0)
+	else
 	{
-		int s=2;
+		y=0;
 	}
-
-	return 0;
 }

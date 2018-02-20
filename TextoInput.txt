@@ -1,7 +1,22 @@
+int x;
+int z;
+int salir;
+
+salir=1;
+x=1;
+z=1;
+
+int devolve();
+
 while (salir) {
-if((x>0)|| (z>0))
+int b;
+if(((x>0))|| (z>0))
 {
-y=z*x;
+    
+    z=z*x;
 }
-else {y=0;}
+else {
+    int y;
+    y=34;
+    }
 }

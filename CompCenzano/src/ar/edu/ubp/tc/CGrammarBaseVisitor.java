@@ -15,6 +15,10 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CGrammarVisitor<T> {
 
 	Embellecedor embellecedor = Embellecedor.getInstance();
+	TablaSimbolos tabla = new TablaSimbolos();
+	int scope = 0;
+	boolean compilacionExitosa = true;
+
 
 	/**
 	 * {@inheritDoc}
@@ -31,8 +35,18 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitAsignacion(@NotNull CGrammarParser.AsignacionContext ctx) {
-		embellecedor.append(ctx.getText(), true, 1);
-		return visitChildren(ctx);
+            embellecedor.append(ctx.getText(), true, 1);
+            Variable var = new Variable();
+            var.setNombre(ctx.getChild(0).getText());
+            var.setScope(scope);
+            if(tabla.existeSimbolo(var)){
+                tabla.setUsadoSimbolo(var.getNombre(), true);
+            }
+            else{
+                System.out.println("La variable " + var.getNombre() + " no fue declarada.\n");
+                compilacionExitosa = false;   
+            }
+            return visitChildren(ctx);
         }
 
 	/**
@@ -49,7 +63,15 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPrograma(@NotNull CGrammarParser.ProgramaContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPrograma(@NotNull CGrammarParser.ProgramaContext ctx) {
+            visitChildren(ctx);
+            if(compilacionExitosa){
+                System.out.println("Tabla de simbolos final\n\n" + tabla.toString());
+            }
+            
+            //resultado_Parser += ("\nTabla de simbolos final\n\n" + tablaSimbolos.toString());
+            return null;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -122,16 +144,6 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitEstructura_control_for(@NotNull CGrammarParser.Estructura_control_forContext ctx) {
-            /*
-            embellecedor.append(ctx.ESTRUCTURA_FOR().getText(), true, 2);
-            embellecedor.append(ctx.CARACTER_PARENTESIS_ABRE().getText(), false, 0);
-            embellecedor.append(ctx.getChild(2).getText(),false, 0);
-            embellecedor.append(ctx.SIGNO_PUNTO_Y_COMA(0).getText(), false, 0);
-            embellecedor.append(ctx.getChild(4).getText(),false, 0);
-            embellecedor.append(ctx.SIGNO_PUNTO_Y_COMA(1).getText(), false, 0);
-            embellecedor.append(ctx.getChild(6).getText(),false, 0);
-            embellecedor.append(ctx.CARACTER_PARENTESIS_CIERRA().getText(), false, 0);
-            */
             
             embellecedor.append(ctx.getChild(0).getText(), true, 2);
             embellecedor.append(ctx.getChild(1).getText(), false, 0);
@@ -153,8 +165,10 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitEstructura_control_else(@NotNull CGrammarParser.Estructura_control_elseContext ctx) {
-            
-            embellecedor.append(ctx.getChild(0).getText(), true, 1);
+       
+            if (ctx.getChildCount() > 0) {
+                embellecedor.append(ctx.getChild(0).getText(), true, 1);
+            }            
             visitChildren(ctx);
 
             return null;   
@@ -183,8 +197,16 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitDeclaracion_variable(@NotNull CGrammarParser.Declaracion_variableContext ctx) {
-
-		embellecedor.append(ctx.getText(), true, 1);
+            embellecedor.append(ctx.getText(), true, 1);
+            Variable var = new Variable();
+            var.setTipo(ctx.getChild(0).getText());
+            var.setNombre(ctx.getChild(1).getText());
+            var.setScope(scope);
+            if(!tabla.agregarSimbolo( var )){
+                            System.out.println( "Error: El simbolo " + ctx.getChild(1).getText() + " ya ha sido declarado." );
+                            //resultado_Parser += ( "\nError: El simbolo " + identificador + " ya ha sido declarado." );
+                            compilacionExitosa = false;
+                        }
 		return visitChildren(ctx);
 	}
 
@@ -195,14 +217,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitDeclaracion_funcion(@NotNull CGrammarParser.Declaracion_funcionContext ctx) {
-            /*
-            embellecedor.append(ctx.tipo_dato().getText(), false, 0);
-            embellecedor.append(ctx.ID().getText(), false, 0);
-            embellecedor.append(ctx.CARACTER_PARENTESIS_ABRE().getText(), false, 0);
-            embellecedor.append(ctx.parametros_en_declaracion().getText(), false, 0);
-            embellecedor.append(ctx.CARACTER_PARENTESIS_CIERRA().getText(), true, 0);
-            return visitChildren(ctx);
-            */
+
             embellecedor.append(ctx.getChild(0).getText(), false, 0);
             embellecedor.append(ctx.getChild(1).getText(), false, 0);
             embellecedor.append(ctx.getChild(2).getText(), false, 0);
@@ -219,9 +234,11 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitBloque_instrucciones(@NotNull CGrammarParser.Bloque_instruccionesContext ctx) {
 
+	    scope++;
             embellecedor.append(ctx.CARACTER_LLAVE_ABRE().getText(), true, 1);
             embellecedor.incrementarTabs();
             visitChildren(ctx);
+            scope--;
             embellecedor.decrementarTabs();
             embellecedor.append(ctx.CARACTER_LLAVE_CIERRA().getText(), true, 1);
             return null;
@@ -248,8 +265,6 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
             embellecedor.append(ctx.getChild(2).getText(), false, 0);
             embellecedor.append(ctx.getChild(3).getText(), false, 0);
             visitChildren(ctx);
-            
-            
             return null;
         }
 

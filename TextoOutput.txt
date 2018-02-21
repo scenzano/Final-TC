@@ -5,14 +5,15 @@ int salir;
 salir=1;
 x=1;
 z=1;
-int h;int devolve()
+
+int devolve();
+
 while(salir)
 {
 	int b;
 	if(((x>0))||(z>0))
 	{
 		z=z*x;
-		h=0;
 	}
 	else
 	{

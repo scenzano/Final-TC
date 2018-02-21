@@ -28,17 +28,35 @@ public class TablaSimbolos {
         this.simbolos = simbolos;
     }
     
-    public boolean existeSimbolo( Simbolo s ){
+    public boolean existeSimboloEnScope( Simbolo s ){
         String nombre = s.getNombre();
         int scope = s.getScope();
         boolean ret = false;
         for( Simbolo i : simbolos ) {
-            if( i.getNombre().equals(nombre) && s.getScope() == scope) {
+            if( i.getNombre().equals(nombre) && s.getScope() == i.getScope()) {
                 ret = true;
             }
         }
         return ret;
     }
+
+    public boolean existeSimbolo(Simbolo s) {
+
+        for( Simbolo i : simbolos ) {            
+            if( i.getNombre().equals( s.getNombre()) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean agregarSimbolo( Simbolo s ) {
+        if( existeSimboloEnScope( s )) {
+            return false;
+        }
+        simbolos.add( s );
+        return true;
+    }    
     
     public int getScopeSimbolo( Simbolo s ) {        
         for( Simbolo i : simbolos ) {
@@ -57,22 +75,13 @@ public class TablaSimbolos {
         }
         return null;
     }
-    
-    public boolean agregarSimbolo( Simbolo s ) {
-        if( existeSimbolo( s ) &&
-            s.getScope() == getScopeSimbolo(s) ) {
-            return false;
-        }
-        simbolos.add( s );
-        return true;
-    }    
 
-    public void removerSimbolo(Simbolo s) {
-        /*
+    public void removerSimbolo(int scope) {
+
         int i = 0;
         
         while( i < simbolos.size()) {
-            if(simbolos.get( i ).getContexto()>=nivel) {
+            if(simbolos.get( i ).getScope()>=scope) {
                 simbolos.remove(i);
             }
             else
@@ -80,8 +89,20 @@ public class TablaSimbolos {
                 i++;
             }
         }
-        */
-        simbolos.remove(s);
+    }
+
+    public void removerSimbolos(int nivel) {
+        int i = 0;
+        
+        while( i < simbolos.size()) {
+            if(simbolos.get( i ).getScope()>=nivel) {
+                simbolos.remove(i);
+            }
+            else
+            {
+                i++;
+            }
+        }
     }
 
     public boolean setUsadoSimbolo(String nombre, boolean usada) {
@@ -105,6 +126,20 @@ public class TablaSimbolos {
             }
         }
         return false;
+    }
+
+    public String toStringScope(int scope) {
+        String tablaSimbolosString = "";
+        
+        for(Simbolo s : simbolos) {
+            if( s.getScope() <= scope ) {
+            tablaSimbolosString += s.toString();
+            tablaSimbolosString += "\n";
+            }
+            
+        }
+        
+        return tablaSimbolosString;
     }
 
     @Override

@@ -35,19 +35,24 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitAsignacion(@NotNull CGrammarParser.AsignacionContext ctx) {
-            embellecedor.append(ctx.getText(), true, 1);
-            Variable var = new Variable();
-            var.setNombre(ctx.getChild(0).getText());
-            var.setScope(scope);
-            if(tabla.existeSimbolo(var)){
-                tabla.setUsadoSimbolo(var.getNombre(), true);
-            }
-            else{
-                System.out.println("La variable " + var.getNombre() + " no fue declarada.\n");
-                compilacionExitosa = false;   
-            }
-            return visitChildren(ctx);
+        
+        Variable var = new Variable();
+
+        embellecedor.append(ctx.getText(), true, 1);
+                
+        var.setNombre(ctx.getChild(0).getText());
+        var.setScope(scope);
+        
+        if(tabla.existeSimbolo(var)){
+            tabla.setUsadoSimbolo(var.getNombre(), true);
         }
+        else{
+            System.out.println("La variable " + var.getNombre() + " no fue declarada.\n");
+            compilacionExitosa = false;   
+        }
+        
+        return visitChildren(ctx);
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -64,13 +69,15 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitPrograma(@NotNull CGrammarParser.ProgramaContext ctx) {
-            visitChildren(ctx);
-            if(compilacionExitosa){
-                System.out.println("Tabla de simbolos final\n\n" + tabla.toString());
-            }
+        
+        visitChildren(ctx);
+    
+        if(compilacionExitosa){
+            System.out.println("Tabla de simbolos final\n\n" + tabla.toString());
+        }
             
-            //resultado_Parser += ("\nTabla de simbolos final\n\n" + tablaSimbolos.toString());
-            return null;
+        //resultado_Parser += ("\nTabla de simbolos final\n\n" + tablaSimbolos.toString());
+        return null;
 	}
 
 	/**
@@ -113,13 +120,13 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitEstructura_control_while(@NotNull CGrammarParser.Estructura_control_whileContext ctx) {
             
-            embellecedor.append(ctx.getChild(0).getText(), true, 1);
-            embellecedor.append(ctx.getChild(1).getText(), false, 0);
-            embellecedor.append(ctx.getChild(2).getText(), false, 0);
-            embellecedor.append(ctx.getChild(3).getText(), false, 0);
-            
-            return visitChildren(ctx);
-        }
+        embellecedor.append(ctx.getChild(0).getText(), true, 2);
+        embellecedor.append(ctx.getChild(1).getText(), false, 0);
+        embellecedor.append(ctx.getChild(2).getText(), false, 0);
+        embellecedor.append(ctx.getChild(3).getText(), false, 0);
+           
+        return visitChildren(ctx);
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -145,18 +152,17 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitEstructura_control_for(@NotNull CGrammarParser.Estructura_control_forContext ctx) {
             
-            embellecedor.append(ctx.getChild(0).getText(), true, 2);
-            embellecedor.append(ctx.getChild(1).getText(), false, 0);
-            embellecedor.append(ctx.getChild(2).getText(),false, 0);
-            embellecedor.append(ctx.getChild(3).getText(), false, 0);
-            embellecedor.append(ctx.getChild(4).getText(),false, 0);
-            embellecedor.append(ctx.getChild(5).getText(), false, 0);
-            embellecedor.append(ctx.getChild(6).getText(),false, 0);
-            embellecedor.append(ctx.getChild(7).getText(), false, 0);
+        embellecedor.append(ctx.getChild(0).getText(), true, 2);
+        embellecedor.append(ctx.getChild(1).getText(), false, 0);
+        embellecedor.append(ctx.getChild(2).getText(),false, 0);
+        embellecedor.append(ctx.getChild(3).getText(), false, 0);
+        embellecedor.append(ctx.getChild(4).getText(),false, 0);
+        embellecedor.append(ctx.getChild(5).getText(), false, 0);
+        embellecedor.append(ctx.getChild(6).getText(),false, 0);
+        embellecedor.append(ctx.getChild(7).getText(), false, 0);
             
-            return visitChildren(ctx);
-            
-        }
+        return visitChildren(ctx);
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -166,13 +172,14 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitEstructura_control_else(@NotNull CGrammarParser.Estructura_control_elseContext ctx) {
        
-            if (ctx.getChildCount() > 0) {
-                embellecedor.append(ctx.getChild(0).getText(), true, 1);
-            }            
-            visitChildren(ctx);
-
-            return null;   
-        }
+        if (ctx.getChildCount() > 0) {
+            embellecedor.append(ctx.getChild(0).getText(), true, 1);
+        }            
+        
+        visitChildren(ctx);
+        
+        return null;   
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -197,17 +204,22 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitDeclaracion_variable(@NotNull CGrammarParser.Declaracion_variableContext ctx) {
-            embellecedor.append(ctx.getText(), true, 1);
-            Variable var = new Variable();
-            var.setTipo(ctx.getChild(0).getText());
-            var.setNombre(ctx.getChild(1).getText());
-            var.setScope(scope);
-            if(!tabla.agregarSimbolo( var )){
-                            System.out.println( "Error: El simbolo " + ctx.getChild(1).getText() + " ya ha sido declarado." );
-                            //resultado_Parser += ( "\nError: El simbolo " + identificador + " ya ha sido declarado." );
-                            compilacionExitosa = false;
-                        }
-		return visitChildren(ctx);
+        
+        Variable var = new Variable();
+
+        embellecedor.append(ctx.getText(), true, 1);
+        
+        var.setTipo(ctx.getChild(0).getText());
+        var.setNombre(ctx.getChild(1).getText());
+        var.setScope(scope);
+        
+        if(!tabla.agregarSimbolo( var )){
+            System.out.println( "Error: El simbolo " + ctx.getChild(1).getText() + " ya ha sido declarado." );
+            //resultado_Parser += ( "\nError: El simbolo " + identificador + " ya ha sido declarado." );
+            compilacionExitosa = false;
+        }
+        
+        return visitChildren(ctx);
 	}
 
 	/**
@@ -216,14 +228,29 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDeclaracion_funcion(@NotNull CGrammarParser.Declaracion_funcionContext ctx) {
-
-            embellecedor.append(ctx.getChild(0).getText(), false, 0);
-            embellecedor.append(ctx.getChild(1).getText(), false, 0);
-            embellecedor.append(ctx.getChild(2).getText(), false, 0);
-            embellecedor.append(ctx.getChild(3).getText(), false, 0);
-            embellecedor.append(ctx.getChild(4).getText(), true, 0);
-            return visitChildren(ctx);
+	@Override public T visitDeclaracion_funcion(@NotNull CGrammarParser.Declaracion_funcionContext ctx) {            
+            
+        Funcion fun = new Funcion();
+           
+        fun.setTipo(ctx.getChild(0).getText());
+        fun.setNombre(ctx.getChild(1).getText());
+           
+        if(!tabla.agregarSimbolo( fun )){
+            System.out.println( "Error: El simbolo " + ctx.getChild(1).getText() + " ya ha sido declarado." );
+            //resultado_Parser += ( "\nError: El simbolo " + identificador + " ya ha sido declarado." );
+            compilacionExitosa = false;
+        }
+            
+        embellecedor.append(ctx.getChild(0).getText(), false, 2);
+        embellecedor.append(ctx.getChild(1).getText(), false, 0);
+        embellecedor.append(ctx.getChild(2).getText(), false, 0);
+         
+        visitChildren(ctx);
+          
+        embellecedor.append(ctx.getChild(4).getText(), true, 0);
+        embellecedor.append(ctx.getChild(5).getText(), true, 0);
+         
+        return null;
 	}
 
 	/**
@@ -233,15 +260,22 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitBloque_instrucciones(@NotNull CGrammarParser.Bloque_instruccionesContext ctx) {
-
-	    scope++;
-            embellecedor.append(ctx.CARACTER_LLAVE_ABRE().getText(), true, 1);
-            embellecedor.incrementarTabs();
-            visitChildren(ctx);
-            scope--;
-            embellecedor.decrementarTabs();
-            embellecedor.append(ctx.CARACTER_LLAVE_CIERRA().getText(), true, 1);
-            return null;
+        
+        scope++;
+        embellecedor.append(ctx.CARACTER_LLAVE_ABRE().getText(), true, 1);
+        embellecedor.incrementarTabs();
+        
+        visitChildren(ctx);
+        
+        System.out.println("Tabla de simbolos incluyendo hasta scope profundidad " + scope );
+                     
+        System.out.println(tabla.toStringScope(scope));
+        tabla.removerSimbolos(scope);
+        scope--;
+        embellecedor.decrementarTabs();
+        embellecedor.append(ctx.CARACTER_LLAVE_CIERRA().getText(), true, 1);
+        
+        return null;
 	}
 
 	/**
@@ -260,13 +294,15 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitEstructura_control_if(@NotNull CGrammarParser.Estructura_control_ifContext ctx) {
 
-            embellecedor.append(ctx.getChild(0).getText(), true, 1);
-            embellecedor.append(ctx.getChild(1).getText(), false, 0);
-            embellecedor.append(ctx.getChild(2).getText(), false, 0);
-            embellecedor.append(ctx.getChild(3).getText(), false, 0);
-            visitChildren(ctx);
-            return null;
-        }
+        embellecedor.append(ctx.getChild(0).getText(), true, 1);
+        embellecedor.append(ctx.getChild(1).getText(), false, 0);
+        embellecedor.append(ctx.getChild(2).getText(), false, 0);
+        embellecedor.append(ctx.getChild(3).getText(), false, 0);
+    
+        visitChildren(ctx);
+    
+        return null;
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -275,9 +311,10 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitLlamada_funcion(@NotNull CGrammarParser.Llamada_funcionContext ctx) {
-            embellecedor.append(ctx.getText(), true, 0);
-            return visitChildren(ctx);
-        }
+        
+        embellecedor.append(ctx.getText(), true, 0);
+        return visitChildren(ctx);
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -358,6 +395,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitFor_lista_asignaciones(@NotNull CGrammarParser.For_lista_asignacionesContext ctx) {
-            return visitChildren(ctx);
-        }
+    
+        return visitChildren(ctx);
+    }
 }

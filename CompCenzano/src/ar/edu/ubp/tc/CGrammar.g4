@@ -83,7 +83,7 @@ instrucciones: declaracion_variable instrucciones
              | declaracion_funcion instrucciones
              | asignacion instrucciones
              | llamada_funcion instrucciones
-             | estructura_control 
+             | estructura_control instrucciones
              | retorno instrucciones
              |
              ;

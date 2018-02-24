@@ -1,19 +1,11 @@
-int main ()
+
+void calcular (int a, int b)
 {
-    int  n;
-    int i;
-    double a,b,h;
-    
-    n=2;
-    
-    for(i=0; i < 10; i++)
-    {
-        
-    }
-    
-    while( n > 0){ int s = 2;}
-    
-    
+    return (a+3) * (a+b);
    
-    return 0;
+}
+
+void main()
+{
+    int k = calcular (3, 4);
 }

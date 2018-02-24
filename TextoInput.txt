@@ -1,11 +1,5 @@
-
-void calcular (int a, int b)
-{
-    return (a+3) * (a+b);
-   
-}
-
 void main()
 {
     int k = calcular (3, 4);
+    
 }

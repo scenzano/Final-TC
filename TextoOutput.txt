@@ -1,24 +1,6 @@
 
-int x;
-int z;
-int salir;
-salir=1;
-x=1;
-z=1;
 
-int devolve(int a,int e);
-
-while(salir)
+void main()
 {
-	int b;
-	if(((x>0))||(z>0))
-	{
-		devolve(z,x);
-		z=z*x;
-	}
-	else
-	{
-		int y;
-		y=34;
-	}
+	int k=calcular(3,4);
 }

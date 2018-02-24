@@ -38,17 +38,23 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 		ParseTree child;
 
         if(ctx.getChildCount() != 0){
-        	embellecedor.append(ctx.getChild(0).getText(), firstIndent, lineBreaks);
-        }
-        
-        for(int i = 1; i < ctx.getChildCount(); ++i){
-            child = ctx.getChild(i);
-            if(child.getClass().getName().equals("org.antlr.v4.runtime.tree.TerminalNodeImpl")){
-                embellecedor.append(child.getText(), false, 0);
-            }
-            else{
-                visit(child);
-            }
+        	child = ctx.getChild(0);
+        	if(child.getClass().getName().equals("org.antlr.v4.runtime.tree.TerminalNodeImpl")){
+            	embellecedor.append(child.getText(), firstIndent, lineBreaks);
+	        }
+	        else{
+	            visit(child);
+	        }
+
+	        for(int i = 1; i < ctx.getChildCount(); ++i){
+	            child = ctx.getChild(i);
+	            if(child.getClass().getName().equals("org.antlr.v4.runtime.tree.TerminalNodeImpl")){
+	                embellecedor.append(child.getText(), false, 0);
+	            }
+	            else{
+	                visit(child);
+	            }
+        	}	
         }
 
 	}
@@ -312,7 +318,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
         var.setScope(scope);
         
         if(!tabla.agregarSimbolo( var )){
-            System.out.println( "Error: El simbolo " + ctx.getChild(1).getText() + " ya ha sido declarado." );
+            System.out.println( "Error: El simbolo " + ctx.getChild(1).getText() + " ya ha sido declarado.\n" );
             //resultado_Parser += ( "\nError: El simbolo " + identificador + " ya ha sido declarado." );
             compilacionExitosa = false;
         }
@@ -435,7 +441,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitValor(@NotNull CGrammarParser.ValorContext ctx) {
 
-		PrintAndVisit(ctx, false, 0);
+            PrintAndVisit(ctx, false, 0);
 
 	    return null;
 	}

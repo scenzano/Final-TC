@@ -64,7 +64,7 @@ public class Funcion extends Simbolo {
             funcion += argumentos.get( i ).getNombre();
             funcion += "]";
         }
-        funcion += "\tScope: ";
+        funcion += "\tScope funcion: ";
         
         switch(scope)
         {

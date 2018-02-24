@@ -42,7 +42,18 @@ public class TablaSimbolos {
 
     public boolean existeSimbolo(Simbolo s) {
 
-        for( Simbolo i : simbolos ) {            
+        for( Simbolo i : simbolos ) {
+
+            if (i.getClass().getName().equals("ar.edu.ubp.tc.Funcion")){
+                Funcion f = ((Funcion)i);
+                for(int ite = 0; ite < f.getArgumentos().size(); ite++ ) {
+                    if( s.getNombre().equals( f.getArgumentos().get(ite).getNombre() ) ) {
+                        return true;
+                    }
+                }
+            }
+
+
             if( i.getNombre().equals( s.getNombre()) ) {
                 return true;
             }

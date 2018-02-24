@@ -3,6 +3,7 @@ package ar.edu.ubp.tc;
 import ar.edu.ubp.tc.embellecedor.Embellecedor;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 /**
  * This class provides an empty implementation of {@link CGrammarVisitor},
@@ -18,7 +19,6 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	TablaSimbolos tabla = new TablaSimbolos();
 	int scope = 0;
 	boolean compilacionExitosa = true;
-
 
 	/**
 	 * {@inheritDoc}
@@ -37,9 +37,21 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	@Override public T visitAsignacion(@NotNull CGrammarParser.AsignacionContext ctx) {
         
         Variable var = new Variable();
+        
+        ParseTree child;
+        
+        embellecedor.append(ctx.getChild(0).getText(), true, 1);
+        
+        for(int i = 1; i < ctx.getChildCount(); ++i){
+            child = ctx.getChild(i);
+            if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+                embellecedor.append(child.getText(), false, 0);
+            }
+            else{
+                visit(child);
+            }
+        }
 
-        embellecedor.append(ctx.getText(), true, 1);
-                
         var.setNombre(ctx.getChild(0).getText());
         var.setScope(scope);
         
@@ -47,11 +59,11 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
             tabla.setUsadoSimbolo(var.getNombre(), true);
         }
         else{
-            System.out.println("La variable " + var.getNombre() + " no fue declarada.\n");
+            System.out.println("La variable " + var.getNombre() + " no fue declarada o esta siendo usada fuera de su scope.\n");
             compilacionExitosa = false;   
         }
         
-        return visitChildren(ctx);
+        return null;
     }
 
 	/**
@@ -60,7 +72,26 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitTipo_dato(@NotNull CGrammarParser.Tipo_datoContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTipo_dato(@NotNull CGrammarParser.Tipo_datoContext ctx) {
+
+		ParseTree child;
+
+        if(ctx.getChildCount() != 0){
+        	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+        }
+        
+        for(int i = 1; i < ctx.getChildCount(); ++i){
+            child = ctx.getChild(i);
+            if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+                embellecedor.append(child.getText(), false, 0);
+            }
+            else{
+                visit(child);
+            }
+        }
+
+		return null;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -86,7 +117,27 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFor_asignacion(@NotNull CGrammarParser.For_asignacionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFor_asignacion(@NotNull CGrammarParser.For_asignacionContext ctx) {
+
+		ParseTree child;
+
+        if(ctx.getChildCount() != 0){
+        	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+        }
+        
+        for(int i = 1; i < ctx.getChildCount(); ++i){
+            child = ctx.getChild(i);
+            if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+                embellecedor.append(child.getText(), false, 0);
+            }
+            else{
+                visit(child);
+            }
+        }
+
+        return null;
+
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -94,7 +145,40 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDeclaraciones_asignacion(@NotNull CGrammarParser.Declaraciones_asignacionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDeclaraciones_asignacion(@NotNull CGrammarParser.Declaraciones_asignacionContext ctx) {
+
+		ParseTree child;
+
+        if(ctx.getChildCount() != 0){
+        	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+        }
+        
+        for(int i = 1; i < ctx.getChildCount(); ++i){
+            child = ctx.getChild(i);
+            if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+                embellecedor.append(child.getText(), false, 0);
+            }
+            else{
+                visit(child);
+            }
+        }
+
+       /*
+       if (ctx.getChildCount() != 0 && ctx.termino_matematico() != null){
+                
+                embellecedor.append(ctx.getChild(0).getText(), false, 0);
+                visit(ctx.getChild(1));
+                visit(ctx.getChild(2));
+            }
+        else if(ctx.getChildCount() != 0){
+            embellecedor.append(ctx.getChild(0).getText(), false, 0);
+            embellecedor.append(ctx.getChild(1).getText(), false, 0);
+            visit(ctx.getChild(2));
+        }
+        */
+            
+        return null;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -102,7 +186,39 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitTermino_matematico(@NotNull CGrammarParser.Termino_matematicoContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTermino_matematico(@NotNull CGrammarParser.Termino_matematicoContext ctx) {
+
+			ParseTree child;
+	        
+	        if(ctx.getChildCount() != 0){
+	        	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+	        }
+	        
+	        for(int i = 1; i < ctx.getChildCount(); ++i){
+	            child = ctx.getChild(i);
+	            if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	                embellecedor.append(child.getText(), false, 0);
+	            }
+	            else{
+	                visit(child);
+	            }
+	        }
+            
+            /*
+            if (ctx.getChildCount() != 0 && ctx.getChildCount() > 2){
+                
+                embellecedor.append(ctx.getChild(0).getText(), false, 0);
+                visit(ctx.getChild(1));
+                embellecedor.append(ctx.getChild(2).getText(), false, 0);
+                visit(ctx.getChild(3));
+            }
+            else if(ctx.getChildCount() != 0){
+                visitChildren(ctx);
+            }
+            */
+            
+            return null;
+        }
 
 	/**
 	 * {@inheritDoc}
@@ -119,13 +235,24 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitEstructura_control_while(@NotNull CGrammarParser.Estructura_control_whileContext ctx) {
-            
-        embellecedor.append(ctx.getChild(0).getText(), true, 2);
-        embellecedor.append(ctx.getChild(1).getText(), false, 0);
-        embellecedor.append(ctx.getChild(2).getText(), false, 0);
-        embellecedor.append(ctx.getChild(3).getText(), false, 0);
+
+		ParseTree child;
+	        
+	    if(ctx.getChildCount() != 0){
+	      	embellecedor.append(ctx.getChild(0).getText(), true, 2);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
            
-        return visitChildren(ctx);
+        return null;
     }
 
 	/**
@@ -134,7 +261,59 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParametros_en_declaracion(@NotNull CGrammarParser.Parametros_en_declaracionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParametros_en_declaracion(@NotNull CGrammarParser.Parametros_en_declaracionContext ctx) {
+
+
+			ParseTree child;
+	        
+	        if(ctx.getChildCount() != 0){
+	        	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+	        }
+	        
+	        for(int i = 1; i < ctx.getChildCount(); ++i){
+	            child = ctx.getChild(i);
+	            if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	                embellecedor.append(child.getText(), false, 0);
+	            }
+	            else{
+	                visit(child);
+	            }
+	        }
+            
+            Variable var = new Variable();
+
+            if (ctx.getChildCount() != 0 && ctx.getChildCount() < 4){
+
+            	/*
+
+            	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+            	embellecedor.append(ctx.getChild(1).getText(), false, 0);
+            	*/
+                
+                var.setTipo(ctx.getChild(0).getText());
+                var.setNombre(ctx.getChild(1).getText());
+                var.setScope(scope);
+                Simbolo ultimoSimbolo = tabla.getSimbolos().getLast();
+
+                if (ultimoSimbolo.getClass().getName().equals("ar.edu.ubp.tc.Funcion")){
+
+                    if( !((Funcion)ultimoSimbolo).agregarArgumento(var) ) {
+                    	System.out.println( "Error: El argumento " + ctx.getChild(1).getText() + " ya ha sido declarado." );
+                    	compilacionExitosa = false;
+                    }
+                }
+            }
+            /*
+            else if(ctx.getChildCount() != 0){
+
+            	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+            	embellecedor.append(ctx.getChild(2).getText(), false, 0);
+                
+            }
+            */
+
+            return null;
+        }
 
 	/**
 	 * {@inheritDoc}
@@ -142,7 +321,40 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLista_parametros_en_llamada(@NotNull CGrammarParser.Lista_parametros_en_llamadaContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLista_parametros_en_llamada(@NotNull CGrammarParser.Lista_parametros_en_llamadaContext ctx) {
+
+		ParseTree child;
+	        
+	    if(ctx.getChildCount() != 0){
+	        embellecedor.append(ctx.getChild(0).getText(), false, 0);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	             embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	         }
+	    }
+		
+		/*
+		if(ctx.getChildCount() != 0 && ctx.getChildCount() < 4){
+
+            embellecedor.append(ctx.getChild(0).getText(), false, 0);
+            visitChildren(ctx);
+        }
+	    else if(ctx.getChildCount() != 0){
+          	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+          	embellecedor.append(ctx.getChild(1).getText(), false, 0);
+          	embellecedor.append(ctx.getChild(3).getText(), false, 0);
+            visitChildren(ctx);   	  
+        }
+        */
+
+		return null;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -151,7 +363,8 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitEstructura_control_for(@NotNull CGrammarParser.Estructura_control_forContext ctx) {
-            
+        
+        /*
         embellecedor.append(ctx.getChild(0).getText(), true, 2);
         embellecedor.append(ctx.getChild(1).getText(), false, 0);
         embellecedor.append(ctx.getChild(2).getText(),false, 0);
@@ -160,8 +373,25 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
         embellecedor.append(ctx.getChild(5).getText(), false, 0);
         embellecedor.append(ctx.getChild(6).getText(),false, 0);
         embellecedor.append(ctx.getChild(7).getText(), false, 0);
+		*/
+
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), true, 2);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
             
-        return visitChildren(ctx);
+        return null;
     }
 
 	/**
@@ -171,13 +401,23 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitEstructura_control_else(@NotNull CGrammarParser.Estructura_control_elseContext ctx) {
-       
-        if (ctx.getChildCount() > 0) {
-            embellecedor.append(ctx.getChild(0).getText(), true, 1);
-        }            
-        
-        visitChildren(ctx);
-        
+
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), true, 1);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+            
         return null;   
     }
 
@@ -187,7 +427,59 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLista_parametros_en_declaracion(@NotNull CGrammarParser.Lista_parametros_en_declaracionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLista_parametros_en_declaracion(@NotNull CGrammarParser.Lista_parametros_en_declaracionContext ctx) {
+            
+        Variable var = new Variable();
+
+
+        ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+     
+        if (ctx.getChildCount() != 0 && ctx.getChildCount() < 5){
+
+           	/*
+           	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+           	embellecedor.append(ctx.getChild(1).getText(), false, 0);
+           	embellecedor.append(ctx.getChild(2).getText(), false, 0);
+          	*/
+                
+            var.setTipo(ctx.getChild(1).getText());
+            var.setNombre(ctx.getChild(2).getText());
+            var.setScope(scope);
+
+            Simbolo ultimoSimbolo = tabla.getSimbolos().getLast();
+
+            if (ultimoSimbolo.getClass().getName().equals("ar.edu.ubp.tc.Funcion")){
+
+                if( !((Funcion)ultimoSimbolo).agregarArgumento(var) ) {
+                  	System.out.println( "Error: El argumento " + ctx.getChild(2) + " ya ha sido declarado." );
+                  	compilacionExitosa = false;
+                }
+            }
+        }
+        /*
+        else if(ctx.getChildCount() != 0){
+           	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+           	embellecedor.append(ctx.getChild(1).getText(), false, 0);
+          	embellecedor.append(ctx.getChild(3).getText(), false, 0);
+        }
+        */
+            
+        return null;
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -195,7 +487,32 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLista_expresiones_matematicas(@NotNull CGrammarParser.Lista_expresiones_matematicasContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLista_expresiones_matematicas(@NotNull CGrammarParser.Lista_expresiones_matematicasContext ctx) {
+
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+            /*
+            if (ctx.getChildCount() > 0) {
+                embellecedor.append(ctx.getChild(0).getText(), false, 0);
+                visit(ctx.getChild(1));
+            }
+            */
+            
+        return null;
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -207,8 +524,30 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
         
         Variable var = new Variable();
 
-        embellecedor.append(ctx.getText(), true, 1);
-        
+        ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), true, 1);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+
+	    /*
+
+        embellecedor.append(ctx.getChild(0).getText(), true, 1);
+        embellecedor.append(ctx.getChild(1).getText(), false, 0);
+        visit(ctx.getChild(2));
+        embellecedor.append(ctx.getChild(3).getText(), false, 0);
+        */
+
         var.setTipo(ctx.getChild(0).getText());
         var.setNombre(ctx.getChild(1).getText());
         var.setScope(scope);
@@ -219,7 +558,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
             compilacionExitosa = false;
         }
         
-        return visitChildren(ctx);
+        return null;
 	}
 
 	/**
@@ -234,22 +573,34 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
            
         fun.setTipo(ctx.getChild(0).getText());
         fun.setNombre(ctx.getChild(1).getText());
+        fun.setScope(scope);
            
         if(!tabla.agregarSimbolo( fun )){
             System.out.println( "Error: El simbolo " + ctx.getChild(1).getText() + " ya ha sido declarado." );
             //resultado_Parser += ( "\nError: El simbolo " + identificador + " ya ha sido declarado." );
             compilacionExitosa = false;
         }
-            
-        embellecedor.append(ctx.getChild(0).getText(), false, 2);
+
+        embellecedor.append(ctx.getChild(0).getText(), true, 2);
         embellecedor.append(ctx.getChild(1).getText(), false, 0);
         embellecedor.append(ctx.getChild(2).getText(), false, 0);
-         
-        visitChildren(ctx);
-          
-        embellecedor.append(ctx.getChild(4).getText(), true, 0);
-        embellecedor.append(ctx.getChild(5).getText(), true, 0);
-         
+
+        
+        //Este cambio de scope es para que las variables declaradas tengan el mismo scope que el bloque
+        //pero necesito testearlo
+        scope++;
+        visit(ctx.getChild(3));
+        scope--;
+
+        embellecedor.append(ctx.getChild(4).getText(), false, 0);
+        
+        if(ctx.getChild(5).getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+        	embellecedor.append(ctx.getChild(5).getText(), false, 0);
+        }
+        else{
+        	visit(ctx.getChild(5));
+        }
+
         return null;
 	}
 
@@ -284,7 +635,12 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitOperador_incremento_decremento(@NotNull CGrammarParser.Operador_incremento_decrementoContext ctx) { return visitChildren(ctx); }
+	@Override public T visitOperador_incremento_decremento(@NotNull CGrammarParser.Operador_incremento_decrementoContext ctx) {
+
+		embellecedor.append(ctx.getText(), false, 0);
+
+		return visitChildren(ctx);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -294,12 +650,29 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitEstructura_control_if(@NotNull CGrammarParser.Estructura_control_ifContext ctx) {
 
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), true, 1);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+	    /*
         embellecedor.append(ctx.getChild(0).getText(), true, 1);
         embellecedor.append(ctx.getChild(1).getText(), false, 0);
         embellecedor.append(ctx.getChild(2).getText(), false, 0);
         embellecedor.append(ctx.getChild(3).getText(), false, 0);
     
         visitChildren(ctx);
+        */
     
         return null;
     }
@@ -311,9 +684,10 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitLlamada_funcion(@NotNull CGrammarParser.Llamada_funcionContext ctx) {
-        
-        embellecedor.append(ctx.getText(), true, 0);
-        return visitChildren(ctx);
+
+		visitChildren(ctx);
+        embellecedor.append(ctx.getChild(1).getText(), false, 0);
+        return null;
     }
 
 	/**
@@ -322,7 +696,33 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitValor(@NotNull CGrammarParser.ValorContext ctx) { return visitChildren(ctx); }
+	@Override public T visitValor(@NotNull CGrammarParser.ValorContext ctx) {
+		
+		/*
+		if(ctx.valor_funcion() == null){
+			embellecedor.append(ctx.getText(), false, 0);
+		}
+		return visitChildren(ctx);
+		*/
+
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+
+	    return null;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -346,7 +746,26 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitTermino_logico(@NotNull CGrammarParser.Termino_logicoContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTermino_logico(@NotNull CGrammarParser.Termino_logicoContext ctx) {
+
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+
+	    return null;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -354,7 +773,26 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLista_terminos_logicos(@NotNull CGrammarParser.Lista_terminos_logicosContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLista_terminos_logicos(@NotNull CGrammarParser.Lista_terminos_logicosContext ctx) {
+
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+
+	    return null;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -362,7 +800,38 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitRetorno(@NotNull CGrammarParser.RetornoContext ctx) { return visitChildren(ctx); }
+	@Override public T visitRetorno(@NotNull CGrammarParser.RetornoContext ctx) {
+
+
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), true, 1);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+
+		/*
+                if(ctx.termino_matematico() != null){
+                    embellecedor.append(ctx.getChild(0).getText(), true, 1);
+                    visit(ctx.getChild(1));
+                    embellecedor.append(ctx.getChild(2).getText(), false, 0);
+                }
+                else{
+                    
+                }
+        */
+                
+		return null;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -370,7 +839,40 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParametros_en_llamada(@NotNull CGrammarParser.Parametros_en_llamadaContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParametros_en_llamada(@NotNull CGrammarParser.Parametros_en_llamadaContext ctx) {
+
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+
+	    /*
+
+		if(ctx.getChildCount() != 0 && ctx.getChildCount() > 2){
+
+            embellecedor.append(ctx.getChild(0).getText(), false, 0);
+            visit(ctx.getChild(1));
+            embellecedor.append(ctx.getChild(2).getText(), false, 0);
+			visit(ctx.getChild(3));
+        }
+	    else if(ctx.getChildCount() != 0){
+          	visitChildren(ctx);    	  
+        }
+        */
+
+		return null;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -378,7 +880,47 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitValor_funcion(@NotNull CGrammarParser.Valor_funcionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitValor_funcion(@NotNull CGrammarParser.Valor_funcionContext ctx) {
+
+		Funcion fun = new Funcion();
+
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), true, 1);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+
+	    /*
+
+        embellecedor.append(ctx.getChild(0).getText(), false, 0);
+        embellecedor.append(ctx.getChild(1).getText(), false, 0);
+        visit(ctx.getChild(2));
+        embellecedor.append(ctx.getChild(3).getText(), false, 0);
+        */
+                
+        fun.setNombre(ctx.getChild(0).getText());
+        fun.setScope(scope);
+        
+        if(tabla.existeSimbolo(fun)){
+            tabla.setUsadoSimbolo(fun.getNombre(), true);
+        }
+        else{
+            System.out.println("La funcion " + fun.getNombre() + " no fue declarada o esta siendo usada fuera de scope.\n");
+            compilacionExitosa = false;   
+        }
+        
+        return null;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -386,7 +928,27 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLista_expresiones_logicas(@NotNull CGrammarParser.Lista_expresiones_logicasContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLista_expresiones_logicas(@NotNull CGrammarParser.Lista_expresiones_logicasContext ctx) {
+
+		ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), false, 0);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+
+	    return null;
+
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -396,6 +958,22 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitFor_lista_asignaciones(@NotNull CGrammarParser.For_lista_asignacionesContext ctx) {
     
-        return visitChildren(ctx);
+        ParseTree child;
+	       
+	    if(ctx.getChildCount() != 0){
+	     	embellecedor.append(ctx.getChild(0).getText(), true, 1);
+	    }
+	        
+	    for(int i = 1; i < ctx.getChildCount(); ++i){
+	        child = ctx.getChild(i);
+	        if(child.getClass().getName() == "org.antlr.v4.runtime.tree.TerminalNodeImpl"){
+	            embellecedor.append(child.getText(), false, 0);
+	        }
+	        else{
+	            visit(child);
+	        }
+	    }
+
+	    return null;
     }
 }

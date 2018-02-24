@@ -1,23 +1,18 @@
 
-int x;
-int z;
-int salir;
-salir=1;
-x=1;
-z=1;
 
-int devolve();
-
-while(salir)
+int main()
 {
-	int b;
-	if(((x>0))||(z>0))
+	int n;
+	int i;
+	double a,b,h;
+	n=2;
+
+	for(i=0;i<10;i++)
 	{
-		z=z*x;
 	}
-	else
-	{
-		int y;
-		y=34;
-	}
+<missing '}'>
+
+while(n>0)
+{
+	int s=2;
 }

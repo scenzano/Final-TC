@@ -1,5 +1,10 @@
 
 
+void calcular(int a,int b)
+{
+	return (a+3)*(b+b);
+}
+
 void main()
 {
 	int k=calcular(3,4);

@@ -102,8 +102,16 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitTipo_dato(@NotNull CGrammarParser.Tipo_datoContext ctx) {
 
-		PrintAndVisit(ctx, false, 0);
+		String parentName = ctx.getParent().getClass().getName();
 
+        if(parentName == "ar.edu.ubp.tc.CGrammarParser$Declaracion_variableContext" 
+        	|| parentName == "ar.edu.ubp.tc.CGrammarParser$Declaracion_funcionContext" ){
+        	PrintAndVisit(ctx, true, 1);
+        }
+        else{
+        	PrintAndVisit(ctx, false, 0);
+        }
+		
 		return null;
 	}
 
@@ -441,9 +449,24 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 */
 	@Override public T visitValor(@NotNull CGrammarParser.ValorContext ctx) {
 
-            PrintAndVisit(ctx, false, 0);
+        PrintAndVisit(ctx, false, 0);
+        
+        if(ctx.ID() != null){
+        	Variable var = new Variable();
+            var.setNombre(ctx.ID().getText());
+            var.setScope(scope);
 
-	    return null;
+            if(!tabla.existeSimbolo(var)){
+	            System.out.println("La variable " + var.getNombre() + " no fue declarada o esta siendo usada fuera de su scope.\n");
+	            //resultado_Parser += ( "\nError: La variable " + var.getNombre() + " no fue declarada o esta siendo usada fuera de su scope.\n" );
+	            compilacionExitosa = false;
+        	}
+        	else{
+	              
+        	}
+        }
+        
+		return null;
 	}
 
 	/**
@@ -525,7 +548,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 
 		Funcion fun = new Funcion();
 
-		PrintAndVisit(ctx, true, 1);
+		PrintAndVisit(ctx, false, 0);
                 
         fun.setNombre(ctx.getChild(0).getText());
         fun.setScope(scope);

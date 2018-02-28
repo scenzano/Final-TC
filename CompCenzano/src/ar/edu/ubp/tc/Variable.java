@@ -48,6 +48,8 @@ public class Variable extends Simbolo {
         variable +=  this.nombre;
         variable +=  "\tUsada: ";
         variable +=  this.usada;
+        variable +=  "\tValor: ";
+        variable +=  this.valor;
         variable +=  "\tScope: ";
         variable +=  this.scope;
         variable +=  "\tInicializada: ";

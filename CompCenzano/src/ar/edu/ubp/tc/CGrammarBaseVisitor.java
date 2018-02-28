@@ -2,6 +2,10 @@
 package ar.edu.ubp.tc;
 
 import ar.edu.ubp.tc.embellecedor.Embellecedor;
+import java.util.LinkedList;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
@@ -19,6 +23,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 
     Embellecedor embellecedor = Embellecedor.getInstance();
     TablaSimbolos tabla = new TablaSimbolos();
+    Tac tac = new Tac();
     int scope = 0;
     boolean compilacionExitosa = true;
 
@@ -58,6 +63,23 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 
     }
 
+    private void EvaluateMathExpression(String expr) {
+
+        // Get JavaScript engine
+        ScriptEngine engine = new ScriptEngineManager().getEngineByExtension("js");
+
+        try {
+            // Evaluate the expression
+            Object result = engine.eval(expr);
+
+            System.out.println(expr + " = " + result);
+        } catch (ScriptException e) {
+            // Something went wrong
+            e.printStackTrace();
+        }
+
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -88,11 +110,18 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
         var.setScope(scope);
 
         if (tabla.existeSimbolo(var)) {
-            tabla.setUsadoSimbolo(var.getNombre(), true);
+            var = (Variable) tabla.getSimbolo(ctx.getChild(0).getText(), scope);
+            var.setUsada(true);
+            if (ctx.termino_matematico() != null) {
+                var.setValor(ctx.termino_matematico().getText());
+            }
+
         } else {
             System.out.println("La variable " + var.getNombre() + " no fue declarada o esta siendo usada fuera de su scope.\n");
             compilacionExitosa = false;
         }
+        
+        tac.addVariable(var);
 
         return null;
     }
@@ -134,6 +163,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
         if (compilacionExitosa) {
 
             System.out.println("Tabla de simbolos final\n\n" + tabla.toString());
+            System.out.println("Codigo de 3 direcciones final\n\n" + tac.toString());
         }
 
         //resultado_Parser += ("\nTabla de simbolos final\n\n" + tablaSimbolos.toString());
@@ -172,8 +202,13 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
             ParserRuleContext parent = ctx.getParent();
             String parentName = ctx.getParent().getClass().getName();
 
-            var.setNombre(ctx.getParent().getChild(1).getText());
-            tabla.setUsadoSimbolo(var.getNombre(), true);
+            var = (Variable) tabla.getSimbolo(ctx.getParent().getChild(1).getText(), scope);
+            var.setUsada(true);
+
+            var.setValor(ctx.termino_matematico().getText());
+            //EvaluateMathExpression(ctx.termino_matematico().getText());
+
+            tac.addVariable(var);
 
         } else if (ctx.getChildCount() != 0) {
 
@@ -392,6 +427,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
             //resultado_Parser += ( "\nError: El simbolo " + identificador + " ya ha sido declarado." );
             compilacionExitosa = false;
         }
+        tac.addVariable(var);
 
         PrintAndVisit(ctx, true, 1);
 
@@ -493,7 +529,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
     @Override
     public T visitEstructura_control_if(@NotNull CGrammarParser.Estructura_control_ifContext ctx) {
 
-        PrintAndVisit(ctx, true, 1);
+        PrintAndVisit(ctx, true, 2);
 
         return null;
     }
@@ -606,7 +642,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
     @Override
     public T visitRetorno(@NotNull CGrammarParser.RetornoContext ctx) {
 
-        PrintAndVisit(ctx, true, 1);
+        PrintAndVisit(ctx, true, 2);
 
         return null;
     }
@@ -638,7 +674,13 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 
         Funcion fun = new Funcion();
 
-        PrintAndVisit(ctx, false, 0);
+        String parentName = ctx.getParent().getClass().getName();
+
+        if (parentName == "ar.edu.ubp.tc.CGrammarParser$ValorContext") {
+            PrintAndVisit(ctx, false, 0);
+        } else {
+            PrintAndVisit(ctx, true, 1);
+        }
 
         fun.setNombre(ctx.getChild(0).getText());
         fun.setScope(scope);

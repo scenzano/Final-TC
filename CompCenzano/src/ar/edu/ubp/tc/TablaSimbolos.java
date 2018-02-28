@@ -78,12 +78,24 @@ public class TablaSimbolos {
         return -1;
     }
     
+    /*
+        Usage: Nombre should be the name you are looking for.
+        scope: Should be the scope from were you are calling this function.
+    */
     public Simbolo getSimbolo(String nombre, int scope) {
-        for( Simbolo s : simbolos ) {
-            if( s.getNombre().equals(nombre) && s.getScope() == scope) {
-                return s;
+
+        Simbolo sim;
+        /*
+            This iteration is made backwards tp make sure that we get the first
+            simbol that has our same scope
+        */
+        for(int ite = simbolos.size() - 1; ite >= 0; --ite){
+            sim = simbolos.get(ite);
+            if(sim.getNombre().equals(nombre) && sim.getScope() <= scope ){
+                return sim;
             }
         }
+
         return null;
     }
 

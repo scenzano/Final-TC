@@ -52,27 +52,12 @@ public class Main {
             CGrammarBaseVisitor visitor = new CGrammarBaseVisitor();
             tree.accept(visitor);
             
-            /*
-            File salida = new File("C:\\Users\\sebastian\\Desktop\\FINAL-TC\\FinalCenzano\\TextoPruebaFinalOutput.txt");
-            //Crear objeto FileWriter que sera el que nos ayude a escribir sobre archivo
-            FileWriter escribir = new FileWriter(salida,true);
-            //Escribimos en el archivo con el metodo write 
-            escribir.write(resultado_total);
-            //Cerramos la conexion
-            escribir.close();
-            */
+            
+
             if(visitor.compilacionExitosa)
             {
                 System.out.println("Compilacion exitosa!");
-                /*
-                boolean mostrar3Direcciones = false;
-                
-                if( mostrar3Direcciones )
-                {
-                    System.out.println("\n\n--------------------\n\nCodigo 3 direcciones:\n\n");
-                    System.out.println(listener.codigoTresDirecciones);
-                }
-                */
+
             }
             else
             {
@@ -81,6 +66,11 @@ public class Main {
             }
             
             Embellecedor.getInstance().persistirArchivo();
+            
+            File salida = new File("..\\Tabla3ac.txt");
+            try (FileWriter escribir = new FileWriter(salida,false)) {
+                escribir.write(visitor.outTabla);
+            }
 
 
             //Podríamos imprimir el árbol por consola.

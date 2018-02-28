@@ -23,6 +23,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 
     Embellecedor embellecedor = Embellecedor.getInstance();
     TablaSimbolos tabla = new TablaSimbolos();
+    String outTabla  = "";
     Tac tac = new Tac();
     int scope = 0;
     boolean compilacionExitosa = true;
@@ -114,6 +115,7 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
             var.setUsada(true);
             if (ctx.termino_matematico() != null) {
                 var.setValor(ctx.termino_matematico().getText());
+                //EvaluateMathExpression(ctx.termino_matematico().getText());
             }
 
         } else {
@@ -163,7 +165,9 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
         if (compilacionExitosa) {
 
             System.out.println("Tabla de simbolos final\n\n" + tabla.toString());
+            outTabla +=  "Tabla de simbolos final\n\n" + tabla.toString();
             System.out.println("Codigo de 3 direcciones final\n\n" + tac.toString());
+            outTabla +=  "\nCodigo de 3 direcciones final\n\n" + tac.toString();
         }
 
         //resultado_Parser += ("\nTabla de simbolos final\n\n" + tablaSimbolos.toString());
@@ -494,8 +498,9 @@ public class CGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
         visitChildren(ctx);
 
         System.out.println("Tabla de simbolos incluyendo hasta scope profundidad " + scope);
-
         System.out.println(tabla.toStringScope(scope));
+        outTabla += ("\n\nTabla de simbolos incluyendo hasta scope profundidad " + scope);
+        outTabla += "\n\n" + tabla.toStringScope(scope);
         tabla.removerSimbolos(scope);
         scope--;
         embellecedor.decrementarTabs();

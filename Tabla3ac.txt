@@ -1,0 +1,36 @@
+
+
+Tabla de simbolos incluyendo hasta scope profundidad 2
+
+Funcion 	Tipo: int 	Nombre: main	Usada: false	Argumentos: 	Scope funcion: Global
+Variable	Tipo: int 	Nombre: n	Usada: true	Valor: 2	Scope: 1	Inicializada: false
+Variable	Tipo: int 	Nombre: i	Usada: false	Valor: 	Scope: 1	Inicializada: false
+Variable	Tipo: int 	Nombre: c	Usada: true	Valor: 3+5	Scope: 2	Inicializada: false
+
+
+Tabla de simbolos incluyendo hasta scope profundidad 2
+
+Funcion 	Tipo: int 	Nombre: main	Usada: false	Argumentos: 	Scope funcion: Global
+Variable	Tipo: int 	Nombre: n	Usada: true	Valor: 2	Scope: 1	Inicializada: false
+Variable	Tipo: int 	Nombre: i	Usada: false	Valor: 	Scope: 1	Inicializada: false
+Variable	Tipo: int 	Nombre: d	Usada: true	Valor: 38	Scope: 2	Inicializada: false
+
+
+Tabla de simbolos incluyendo hasta scope profundidad 1
+
+Funcion 	Tipo: int 	Nombre: main	Usada: false	Argumentos: 	Scope funcion: Global
+Variable	Tipo: int 	Nombre: n	Usada: true	Valor: 2	Scope: 1	Inicializada: false
+Variable	Tipo: int 	Nombre: i	Usada: false	Valor: 	Scope: 1	Inicializada: false
+Tabla de simbolos final
+
+Funcion 	Tipo: int 	Nombre: main	Usada: false	Argumentos: 	Scope funcion: Global
+
+Codigo de 3 direcciones final
+
+t0 := 0	//n
+t1 := 0	//i
+t0 := 2	//n
+t3 := 0	//c
+t3 := 3+5	//c
+t5 := 0	//d
+t5 := 38	//d
